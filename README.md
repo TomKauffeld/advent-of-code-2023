@@ -43,7 +43,7 @@ My solutions to the advent of code 2023
 - **Did you upload the input files/questions?**  
   I did... Now they should be private and not visible anymore. I think they
   should be allowed inside the repo, but I don't make the rules.
-  [PSA: Don't share your inputs](https://www.reddit.com/r/adventofcode/comments/18an94z/psa_dont_share_your_inputs_even_in_your_github/)
+  [Advent of Code FAQ](https://adventofcode.com/2023/about#faq_copying)
   
 
 - **I have a question on one of your solutions, how do I ask for more information?**  
