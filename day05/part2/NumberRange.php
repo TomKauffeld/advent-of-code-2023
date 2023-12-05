@@ -33,5 +33,34 @@ class NumberRange
         return null;
     }
 
+    public function includes(int $number): bool
+    {
+        return $number >= $this->getStart() && $number < $this->getEnd();
+    }
 
+    public function intersects(NumberRange $other): bool
+    {
+        return $other->getStart() < $this->getEnd()
+            && $other->getEnd() > $this->getStart();
+    }
+
+    public function combine(NumberRange $other): NumberRange
+    {
+        if (!$this->intersects($other)) {
+            throw new RuntimeException('cannot combine ranges');
+        }
+        $start = min($this->getStart(), $other->getStart());
+        $end = max($this->getEnd(), $other->getEnd());
+        return new NumberRange($start, $end - $start);
+    }
+
+    public function getIntersection(NumberRange $other): ?NumberRange
+    {
+        if (!$this->intersects($other)) {
+            return null;
+        }
+        $start = max($this->getStart(), $other->getStart());
+        $end = min($this->getEnd(), $other->getEnd());
+        return new NumberRange($start, $end - $start);
+    }
 }

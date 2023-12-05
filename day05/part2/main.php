@@ -1,109 +1,92 @@
 <?php
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'utils.php';
 
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'NumberRange.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'NumberMap.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'NumberMaps.php';
+
 $file = getInputFile(5);
 
-if (!$file)
-    throw new RuntimeException('file not opened');
 
-$ranges = getSeeds(fgets($file));
-$_ = fgets($file);
+$seeds = [];
+$steps = [];
+$currentMap = null;
 
-$maps = [];
-while (!feof($file)) {
-    $maps[] = parse($file);
+function parseSeeds(string $line): array
+{
+    $line = trim(substr($line, strlen('seeds:')));
+    $sNumbers = explode(' ', $line);
+    $iNumbers = array_map(static function (string $sNumber): int {
+        return intval($sNumber);
+    }, $sNumbers);
+    /** @var int|null $start */
+    $start = null;
+    /** @var NumberRange[] $seeds */
+    $seeds = [];
+    foreach ($iNumbers as $iNumber) {
+        if ($start === null) {
+            $start = $iNumber;
+        } else {
+            $seeds[] = new NumberRange($start, $iNumber);
+            $start = null;
+        }
+    }
+    if ($start !== null)
+        throw new RuntimeException('invalid number of seeds');
+    return $seeds;
+}
+
+
+
+while (($line = fgets($file)) !== false) {
+    $line = trim($line);
+    if (str_starts_with($line, 'seeds: ')) {
+        $seeds = parseSeeds($line);
+    } elseif (strlen($line) < 1) {
+        if ($currentMap !== null) {
+            $steps[] = new NumberMaps(...$currentMap);
+        }
+        $currentMap = null;
+    } elseif (preg_match('/^[a-z-]+ map:$/', $line)) {
+        if ($currentMap !== null)
+            throw new RuntimeException('invalid format');
+        $currentMap = [];
+    } elseif (preg_match('/^(?<drs>[0-9]+) (?<srs>[0-9]+) (?<rl>[0-9]+)$/', $line, $matches)) {
+        if ($currentMap === null)
+            throw new RuntimeException('invalid format');
+        $drs = intval($matches['drs']);
+        $srs = intval($matches['srs']);
+        $rl = intval($matches['rl']);
+        $currentMap[] = new NumberMap($srs, $rl, $drs - $srs);
+    } else {
+        throw new RuntimeException('invalid format');
+    }
+}
+
+if ($currentMap !== null) {
+    $steps[] = new NumberMaps(...$currentMap);
 }
 
 fclose($file);
 
-foreach ($ranges as $range) {
-    $numbers = [];
-    $start = $range['start'];
-    $end = $range['end'];
-    $length = $end - $start;
-    print("$start -> $end ($length)\t : ");
-    for($i = $range['start']; $i < $range['end']; ++$i)
-        $numbers[] = $i;
-    $result = traitNumbers($maps, $numbers);
-    $minValue = min(...$result);
-    print("$minValue\n");
+
+print('Seeds: ' . count($seeds) . "\n");
+print('Steps: ' . count($steps) . "\n");
+
+$current = $seeds;
+foreach ($steps as $step) {
+    $current = $step->offsetRanges(...$current);
 }
 
+$smallest = getSmallestRange(...$current);
+print($smallest->getStart() . "\n");
 
 
-function traitNumbers(array $maps, array $numbers): array {
-    foreach ($maps as $map) {
-        $numbers = traitNumbersOnMap($map, $numbers);
-    }
-    return $numbers;
-}
-
-function traitNumbersOnMap(array $map, array $previousNumbers): array {
-    return array_map(static function (int $value) use ($map): int {
-        foreach ($map as $mapValue) {
-            if ($mapValue['start'] <= $value && $mapValue['end'] >= $value) {
-                return $value + $mapValue['offset'];
-            }
-        }
-        return $value;
-    }, $previousNumbers);
-}
-
-
-
-function getSeeds(string $line): array {
-    $prefix = 'seeds: ';
-    if (!str_starts_with($line, $prefix)) {
-        return [];
-    }
-    $subLine = substr($line, strlen($prefix));
-
-    $ranges = [];
-    $start = null;
-    $parts = explode(' ', $subLine);
-    foreach ($parts as $part) {
-        $trimmed = trim($part);
-        if (strlen($trimmed) > 0 && is_numeric($trimmed)) {
-            $number = intval($trimmed);
-            if ($start === null) {
-                $start = $number;
-            } else {
-                $end = $start + $number;
-                $ranges[] = [
-                    'start' => $start,
-                    'end' => $end,
-                ];
-                print("$start -> $end: $number\n");
-                $start = null;
-            }
-        }
-    }
-    if ($start !== null) {
-        throw new RuntimeException('invalid number of entries (should be by pair)');
-    }
-    return $ranges;
-}
-
-function parse($file): array {
-    $name = rtrim(trim(fgets($file)), ':');
-    print("$name\n");
-    return getMap($file);
-}
-
-
-function getMap($file): array {
-    $map = [];
-    while (($line = fgets($file)) !== false && strlen(trim($line)) > 0) {
-        if (preg_match('/^(?<drs>[0-9]+) (?<srs>[0-9]+) (?<rl>[0-9]+)$/', trim($line), $matches)) {
-            $drs = intval($matches['drs']);
-            $srs = intval($matches['srs']);
-            $rl = intval($matches['rl']);
-            $map[] = [
-                'start' => $srs,
-                'end' => $srs + $rl,
-                'offset' => $drs - $srs,
-            ];
-        }
-    }
-    return $map;
+function getSmallestRange(NumberRange ... $ranges): ?NumberRange
+{
+    $smallest = null;
+    foreach ($ranges as $range)
+        if ($smallest === null || $smallest->getStart() > $range->getStart())
+            $smallest = $range;
+    return $smallest;
 }
