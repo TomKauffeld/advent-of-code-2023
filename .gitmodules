@@ -1,0 +1,3 @@
+[submodule "advent-of-code-2023-data"]
+	path = advent-of-code-2023-data
+	url = git@github.com:TomKauffeld/advent-of-code-2023-data.git
