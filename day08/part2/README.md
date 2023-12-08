@@ -24,7 +24,7 @@ below `21 003 205 388 413`.
 
 This would take around 6 hours worst case scenario on my pc...
 
-### [Step 3](./try3.php)
+### [Step 3](./main.php)
 Now I do need to find a better solution if I want to solve it today.  
 So this is what I do know already:
 - the length of each path (until it loops).
@@ -35,3 +35,8 @@ So how can we get the offsets in the global loop that result in every
 path getting on an endpoint ?  
 And more crucially, the first time it happens.
 
+Soooo... I did get a somewhat 
+[spoiler](https://www.reddit.com/r/adventofcode/comments/18dg1hw/2023_day_8_part_2_about_the_correctness_of_a/)
+and saw that the loop length is actually the answer.  
+So my 2nd solution was printing the answer every 5 seconds without
+me understanding it...
