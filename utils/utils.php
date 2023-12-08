@@ -11,6 +11,17 @@ if (!function_exists('str_starts_with')) {
     }
 }
 
+if (!function_exists('str_ends_with')) {
+    function str_ends_with(string $haystack, string $needle): bool {
+        $lh = strlen($haystack);
+        $ln = strlen($needle);
+        if ($ln > $lh)
+            return false;
+        $sh = substr($haystack, $lh - $ln, $ln);
+        return $sh === $needle;
+    }
+}
+
 
 /**
  * @param int $day
