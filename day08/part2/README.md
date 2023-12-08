@@ -40,3 +40,14 @@ Soooo... I did get a somewhat
 and saw that the loop length is actually the answer.  
 So my 2nd solution was printing the answer every 5 seconds without
 me understanding it...
+
+After working with the data, I found that each path hits an endpoint at
+the length of the path minus the start of the loop.  
+This means that at the end of the global loop minus the max start of the 
+loops we hit an endpoint on every path.
+
+To be honest I don't really like this solution as this assumes the data
+is in a very specific format.  
+Sure my 2nd try needed the paths to loop, but that's still more common
+than that every path hits the endpoint at the end of their loop on
+generic data.
