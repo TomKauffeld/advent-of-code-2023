@@ -2,7 +2,6 @@
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'utils.php';
 
 $file = getInputFile(12);
-//$file = fopen('test.txt', 'r');
 
 $sum = 0;
 while (($line = fgets($file)) !== false)
@@ -20,18 +19,14 @@ while (($line = fgets($file)) !== false)
     print ("$cPossibles\t - $sum\n");
 }
 
-global $cacheHits;
 global $cache;
 $cache = [];
-$cacheHits = 0;
 
 function getPossiblesCount(string $springs, ?int $remaining = null, int ... $damaged): int
 {
     global $cache;
     $key = $springs.'-'.join('-', $damaged);
     if (isset($cache[$key])) {
-        global $cacheHits;
-        ++$cacheHits;
         return $cache[$key];
     }
     $d = array_shift($damaged);
@@ -80,11 +75,4 @@ function getPossiblesCount(string $springs, ?int $remaining = null, int ... $dam
     }
     $cache[$key] = $possibles;
     return $possibles;
-}
-
-function createPrefix(string $springs, int $index, int $length): string
-{
-    $prefix = substr($springs, 0, $index + $length);
-    $prefix = substr_replace($prefix, str_repeat('#', $length), $index);
-    return str_replace('?', '.', $prefix);
 }
