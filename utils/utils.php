@@ -22,6 +22,24 @@ if (!function_exists('str_ends_with')) {
     }
 }
 
+/**
+ * @param string $str
+ * @param string $separator
+ * @return int[]
+ */
+function getNumbers(string $str, string $separator = ' '): array
+{
+    $numbers = [];
+    $parts = explode($separator, $str);
+    foreach ($parts as $part)
+    {
+        $part = trim($part);
+        if (strlen($part) > 0 && is_numeric($part))
+            $numbers[] = intval($part);
+    }
+    return $numbers;
+}
+
 
 /**
  * @param int $day
