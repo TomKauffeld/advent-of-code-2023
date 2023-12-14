@@ -74,7 +74,7 @@ My solutions to the advent of code 2023
 * [Day 11](day11/README.md): solved
 * [Day 12](day12/README.md): solved
 * [Day 13](day13/README.md): solved
-* [Day 14](day14/README.md): TBA
+* [Day 14](day14/README.md): announced
 * [Day 15](day15/README.md): TBA
 * [Day 16](day16/README.md): TBA
 * [Day 17](day17/README.md): TBA
