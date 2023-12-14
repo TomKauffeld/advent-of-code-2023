@@ -11,7 +11,7 @@ $offsets = array_fill(0, $w, 0);
 
 for ($y = 0; $y < $h; ++$y)
 {
-    $per = round($y * 100 / $h);
+    $per = round($y * 100 / ($h - 1));
     print("$y / $h -> $per%\n");
     for ($x = 0; $x < $w; ++$x)
     {
