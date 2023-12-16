@@ -1,18 +1,10 @@
 <?php
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'utils.php';
 
-/**
- * @param string|int $day
- * @return array
- */
-function getInput($day): array
+
+function getInput(bool $test = false): array
 {
-    if (is_int($day))
-        $file = getInputFile(13);
-    elseif (is_string($day))
-        $file = fopen($day, 'r');
-    else
-        throw new InvalidArgumentException('day must be a filename or a day number');
+    $file = getInputFile($test);
 
     $fields = [];
 

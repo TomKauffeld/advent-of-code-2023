@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'utils.php';
 
-$file = getInputFile(5);
+$file = getInputFile();
 
 if (!$file)
     throw new RuntimeException('file not opened');
@@ -27,15 +27,7 @@ function getSeeds(string $line): array {
     }
     $subLine = substr($line, strlen($prefix));
 
-    $numbers = [];
-    $parts = explode(' ', $subLine);
-    foreach ($parts as $part) {
-        $trimmed = trim($part);
-        if (strlen($trimmed) > 0 && is_numeric($trimmed)) {
-            $numbers[] = intval($trimmed);
-        }
-    }
-    return $numbers;
+    return getNumbers($subLine);
 }
 
 function parse($file, array $previousNumbers): array {

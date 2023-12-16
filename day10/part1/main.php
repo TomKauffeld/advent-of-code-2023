@@ -2,7 +2,7 @@
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'include.php';
 
 
-$graph = FileParser::parseFile(10);
+$graph = FileParser::parseFile(getInputFile());
 
 $startingNodes = FileParser::getStartingNodes($graph);
 

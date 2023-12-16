@@ -6,7 +6,7 @@ const WEST = 1;
 const SOUTH = 2;
 const EAST = 3;
 
-$map = getMap(16);
+$map = getMap();
 
 
 energize($map, 0, 0, EAST);
@@ -41,14 +41,9 @@ print ("Energized: $sum\n");
 
 
 
-function getMap($day): array
+function getMap(bool $test = false): array
 {
-    if (is_numeric($day))
-        $file = getInputFile(intval($day));
-    elseif (is_string($day))
-        $file = fopen($day, 'r');
-    else
-        throw new RuntimeException('invalid day');
+    $file = getInputFile($test);
 
     $map = [];
     while (($line = fgets($file)) !== false)

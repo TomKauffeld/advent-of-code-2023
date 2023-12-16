@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'utils.php';
 
-$file = getInputFile(6);
+$file = getInputFile();
 
 $times = getNumbersFromFile($file, 'Time: ');
 $distances = getNumbersFromFile($file, 'Distance: ');
@@ -41,26 +41,4 @@ function calculateDistance(int $boost, int $time): int
     if ($boost < 1 || $boost >= $time)
         return 0;
     return ($time - $boost) * ($boost);
-}
-
-
-
-function getNumbersFromFile($file, string $prefix): array
-{
-    if (($line = fgets($file)) === false || !str_starts_with($line, $prefix))
-        throw new RuntimeException('Invalid file format');
-    return getNumbersFromLine($line, strlen($prefix));
-}
-
-function getNumbersFromLine(string $line, int $offset = 0): array
-{
-    $parts = explode(' ', substr($line, $offset));
-    $numbers = [];
-    foreach ($parts as $part) {
-        $part = trim($part);
-        if (strlen($part) > 0 && is_numeric($part)) {
-            $numbers[] = intval($part);
-        }
-    }
-    return $numbers;
 }

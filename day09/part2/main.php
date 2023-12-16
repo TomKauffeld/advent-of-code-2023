@@ -7,7 +7,7 @@ $sum = 0;
 
 while (($line = fgets($file)) !== false)
 {
-    $numbers = getNumbersOnLine($line);
+    $numbers = getNumbers($line);
     if (count($numbers) < 1)
         continue;
     $pyramid = generatePyramid(...$numbers);
@@ -65,22 +65,5 @@ function addNewColumn(array $pyramid): array
 }
 
 
-
-/**
- * @param string $line
- * @return int[]
- */
-function getNumbersOnLine(string $line): array
-{
-    $numbers = [];
-    $parts = explode(' ', $line);
-    foreach ($parts as $part)
-    {
-        $part = trim($part);
-        if (strlen($part) > 0 && is_numeric($part))
-            $numbers[] = intval($part);
-    }
-    return $numbers;
-}
 
 fclose($file);

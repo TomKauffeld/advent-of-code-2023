@@ -6,11 +6,7 @@ const TEST = false;
 
 
 $cycle = getCycle(TEST);
-if (TEST) {
-    $file = fopen('test.txt', 'r');
-} else {
-    $file = getInputFile(10);
-}
+$file = getInputFile(TEST);
 $maxY = 0;
 $maxX = 0;
 while (($line = fgets($file)) !== false) {

@@ -2,7 +2,7 @@
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'input.php';
 
 
-$field = getInput(14);
+$field = getInput();
 
 function fieldToKey(array $field): string
 {

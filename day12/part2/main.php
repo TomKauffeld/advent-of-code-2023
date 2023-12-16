@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'utils.php';
 
-$file = getInputFile(12);
+$file = getInputFile();
 
 $sum = 0;
 while (($line = fgets($file)) !== false)

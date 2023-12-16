@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'utils.php';
 
-$file = getInputFile(3);
+$file = getInputFile();
 
 if (!$file)
     throw new RuntimeException('file not opened');

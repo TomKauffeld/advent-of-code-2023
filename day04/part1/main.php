@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'utils.php';
 
-$file = getInputFile(4);
+$file = getInputFile();
 
 if (!$file)
     throw new RuntimeException('file not opened');
@@ -31,17 +31,6 @@ while (($line = fgets($file)) !== false) {
 
         print("\t - $score\t - $sum\n");
     }
-}
-
-function getNumbers(string $text): array {
-    $numbers = [];
-    foreach (explode(' ', $text) as $item) {
-        $trimmed = trim($item);
-        if (strlen($trimmed) > 0 && is_numeric($trimmed)) {
-            $numbers[] = intval($trimmed);
-        }
-    }
-    return $numbers;
 }
 
 fclose($file);

@@ -5,7 +5,7 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'NumberRange.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'NumberMap.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'NumberMaps.php';
 
-$file = getInputFile(5);
+$file = getInputFile();
 
 
 $seeds = [];
@@ -15,15 +15,12 @@ $currentMap = null;
 function parseSeeds(string $line): array
 {
     $line = trim(substr($line, strlen('seeds:')));
-    $sNumbers = explode(' ', $line);
-    $iNumbers = array_map(static function (string $sNumber): int {
-        return intval($sNumber);
-    }, $sNumbers);
+    $numbers = getNumbers($line);
     /** @var int|null $start */
     $start = null;
     /** @var NumberRange[] $seeds */
     $seeds = [];
-    foreach ($iNumbers as $iNumber) {
+    foreach ($numbers as $iNumber) {
         if ($start === null) {
             $start = $iNumber;
         } else {

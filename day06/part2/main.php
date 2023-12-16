@@ -51,22 +51,3 @@ function calculateDistance(int $boost, int $time): int
         return 0;
     return ($time - $boost) * ($boost);
 }
-
-
-
-function getNumbersFromFile($file, string $prefix): array
-{
-    if (($line = fgets($file)) === false || !str_starts_with($line, $prefix))
-        throw new RuntimeException('Invalid file format');
-    return getNumbersFromLine($line, strlen($prefix));
-}
-
-function getNumbersFromLine(string $line, int $offset = 0): array
-{
-    $line = substr($line, $offset);
-    $line = trim($line);
-    $line = str_replace(' ', '', $line);
-    if (strlen($line) > 0 && is_numeric($line))
-        return [intval($line)];
-    return [];
-}

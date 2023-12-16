@@ -2,7 +2,7 @@
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'utils.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'utils.php';
 
-$positions = readInputFile(11, 1000000 - 1);
+$positions = readInputFile(false, 1000000 - 1);
 
 $distanceMap = getDistanceMap($positions);
 

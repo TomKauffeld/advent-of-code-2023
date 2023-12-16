@@ -2,18 +2,13 @@
 
 
 /**
- * @param int|string $day
+ * @param bool $test
  * @param int $offsetSize
  * @return array{x: int, y: int}[]
  */
-function readInputFile($day, int $offsetSize = 1): array
+function readInputFile(bool $test = false, int $offsetSize = 1): array
 {
-    if (is_numeric($day))
-        $file = getInputFile($day);
-    elseif (is_string($day))
-        $file = fopen($day, 'r');
-    else
-        throw new InvalidArgumentException('day should be a day number or a file path');
+    $file = getInputFile($test);
 
     $positions = [];
 

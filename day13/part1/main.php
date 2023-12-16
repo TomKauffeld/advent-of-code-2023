@@ -2,7 +2,7 @@
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'input.php';
 
 
-$fields = getInput(13);
+$fields = getInput();
 
 
 $sum = 0;

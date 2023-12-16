@@ -4,7 +4,7 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' .
 const LIMIT = 255;
 
 
-$boxes = readInputFile(15, false);
+$boxes = readInputFile(false, false);
 
 $focus = calculateFocusingPower($boxes);
 print("Focus Power: $focus\n");
@@ -24,14 +24,9 @@ function calculateFocusingPower(array $boxes): int
 }
 
 
-function readInputFile($day, bool $debug = false): array
+function readInputFile(bool $test = false, bool $debug = false): array
 {
-    if (is_numeric($day))
-        $file = getInputFile(intval($day));
-    elseif (is_string($day))
-        $file = fopen($day, 'r');
-    else
-        throw new InvalidArgumentException('day must be number or path');
+    $file = getInputFile($test);
 
     $boxes = array_fill(0, LIMIT + 1, []);
     $focalLengths = [];
