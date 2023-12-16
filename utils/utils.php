@@ -62,12 +62,20 @@ function getNumbersFromFile($file, string $prefix, string $separator = ' '): arr
  * @return resource
  */
 function getInputFile(bool $test = false) {
-    $callingFile = explode(DIRECTORY_SEPARATOR, debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0]['file']);
-    $callingDirectory = array_slice($callingFile, 0, count($callingFile) - 1);
-    while (!preg_match('/^part[0-9]+$/', $callingDirectory[count($callingDirectory) - 1]))
-        $callingDirectory = array_slice($callingDirectory, 0, count($callingDirectory) - 1);
-    $dayName = $callingDirectory[count($callingDirectory) - 2];
-    $partName = $callingDirectory[count($callingDirectory) - 1];
+    $stackTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+    $mainFile = $stackTrace[count($stackTrace) - 1]['file'];
+    $mainFileParts = explode(DIRECTORY_SEPARATOR, $mainFile);
+    $callingDirectoryParts = array_slice($mainFileParts, 0, count($mainFileParts) - 1);
+    $partDirectoryParts = $callingDirectoryParts;
+
+    while (!preg_match('/^part[0-9]+$/', $partDirectoryParts[count($partDirectoryParts) - 1]))
+    {
+        $partDirectoryParts = array_slice($partDirectoryParts, 0, count($partDirectoryParts) - 1);
+        if (count($partDirectoryParts) < 1)
+            throw new RuntimeException('invalid folder structure');
+    }
+    $dayName = $partDirectoryParts[count($partDirectoryParts) - 2];
+    $partName = $partDirectoryParts[count($partDirectoryParts) - 1];
 
     $pathTest1 = join(DIRECTORY_SEPARATOR, [__DIR__, '..', $dayName, $partName, 'test.txt']);
     $pathTest2 = join(DIRECTORY_SEPARATOR, [__DIR__, '..', $dayName, 'test.txt']);
