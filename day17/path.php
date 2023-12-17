@@ -42,31 +42,34 @@ function getScore(array $scores, array $point): float
     return $scores[getIndex($point)] ?? INF;
 }
 
-function getBestScore(array $scores, array $point): float
+function getBestScore(array $scores, array $point, ?array $to = null): float
 {
-    return getScore($scores, $point);
+    $possibles = [];
+    $dxMax = $to === null || $to['dx'] < MAX_PATH_LENGTH  ? MAX_PATH_LENGTH : MAX_PATH_LENGTH - 1;
+    $dxMin = $to === null || $to['dx'] > -MAX_PATH_LENGTH  ? -MAX_PATH_LENGTH : -MAX_PATH_LENGTH + 1;
+    $dyMax = $to === null || $to['dy'] < MAX_PATH_LENGTH  ? MAX_PATH_LENGTH : MAX_PATH_LENGTH - 1;
+    $dyMin = $to === null || $to['dy'] > -MAX_PATH_LENGTH ? -MAX_PATH_LENGTH : -MAX_PATH_LENGTH + 1;
+    for ($dx = $dxMin; $dx < $dxMax; ++$dx) {
+        for($dy = $dyMin; $dy < $dyMax; ++$dy) {
+            $possibles[] = getScore($scores, [
+                'x' => $point['x'],
+                'y' => $point['y'],
+                'dx' => $dx,
+                'dy' => $dy,
+            ]);
+        }
+    }
+    return min(...$possibles);
 }
 
 function setScore(array &$scores, array $point, float $score): void
 {
-    $scores[getIndex($point)] = $score;
-    if ($point['dx'] >= 0)
-        for($dx = $point['dx'] + 1; $dx < MAX_PATH_LENGTH - 1; ++$dx)
-            $scores[getIndex(array_merge($point, ['dx' => $dx]))] = $score;
-    if ($point['dx'] <= 0)
-        for($dx = $point['dx'] - 1; $dx > -MAX_PATH_LENGTH + 1; --$dx)
-            $scores[getIndex(array_merge($point, ['dx' => $dx]))] = $score;
-    if ($point['dy'] >= 0)
-        for($dy = $point['dy'] + 1; $dy < MAX_PATH_LENGTH - 1; ++$dy)
-            $scores[getIndex(array_merge($point, ['dy' => $dy]))] = $score;
-    if ($point['dy'] <= 0)
-        for($dy = $point['dy'] - 1; $dy > -MAX_PATH_LENGTH + 1; --$dy)
-            $scores[getIndex(array_merge($point, ['dy' => $dy]))] = $score;
+    $scores[getIndex($point)] = min($score, getScore($scores, $point));
 }
 
 function getCost(array $map, array $scores, array $from, array $to): float
 {
-    return getScore($scores, $from) + $map[$to['y']][$to['x']];
+    return getBestScore($scores, $from, $to) + $map[$to['y']][$to['x']];
 }
 
 function search_AStar(array $map, array $start, array $end, callable $getHeuristic, callable $getNeighbors, callable $isEqual, callable $isEnd): array
@@ -84,7 +87,7 @@ function search_AStar(array $map, array $start, array $end, callable $getHeurist
     {
         if ($isEnd($current, $end))
             return [
-                'cost' => $scores[getIndex($current)],
+                'cost' => getBestScore($scores, $end),
                 'path' => rebuiltPath($from, $current),
             ];
 
@@ -98,7 +101,7 @@ function search_AStar(array $map, array $start, array $end, callable $getHeurist
             if ($tmpScore < $score)
             {
                 $from[$neighborIndex] = $current;
-                $scores[$neighborIndex] = $tmpScore;
+                setScore($scores, $neighbor, $tmpScore);
                 $heuristics[$neighborIndex] = $tmpScore + $getHeuristic($map, $neighbor, $end);
 
                 insertIfNotExist($todo, $neighbor, $isEqual);

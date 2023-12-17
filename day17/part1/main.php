@@ -23,6 +23,7 @@ $cPath = count($path['path']);
 
 print ("PathLength: $cPath\n");
 
+$cost = 0;
 for ($y = 0; $y < $h; ++$y)
 {
     for ($x = 0; $x < $w; ++$x)
@@ -32,6 +33,8 @@ for ($y = 0; $y < $h; ++$y)
             print($map[$y][$x]);
         else
         {
+            if ($x !== 0 && $y !== 0)
+                $cost += $map[$y][$x];
             if ($point['dx'] > 0)
                 print(">");
             elseif($point['dx'] < 0)
@@ -47,8 +50,6 @@ for ($y = 0; $y < $h; ++$y)
     print("\n");
 }
 
-
-
 function isEnd(array $current, array $end): bool
 {
     return $current['x'] === $end['x'] && $current['y'] === $end['y'];
@@ -62,7 +63,7 @@ function getPointInPath(array $path, int $x, int $y): ?array
     return null;
 }
 
-print ("COST: {$path['cost']}\n");
+print ("COST: {$path['cost']}\t$cost\n");
 
 
 function getNeighbor(int $dx, int $dy, array $current): array
@@ -98,5 +99,5 @@ function neighborEquals(array $a, array $b): bool
 
 function heuristic(array $map, array $pointA, array $end): float
 {
-    return (abs($pointA['x'] - $end['x']) + abs($pointA['y'] + $end['y'])) * 0.1;
+    return (abs($pointA['x'] - $end['x']) + abs($pointA['y'] + $end['y']));
 }
