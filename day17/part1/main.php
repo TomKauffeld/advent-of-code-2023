@@ -1,103 +1,73 @@
 <?php
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'utils' . DIRECTORY_SEPARATOR . 'utils.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'common.php';
-require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'path.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'Graph.php';
 
-$map = readInputFile(true);
-
+const MAX_LENGTH = 4;
+$map = readInputFile();
 $h = count($map);
 $w = count($map[0]);
 
-print ("Size: {$w}x$h\n");
+$graph = \common\Graph::createFromData($map, MAX_LENGTH);
 
-$path = search_AStar(
-    $map,
-    ['x' => 0, 'y' => 0, 'dx' => 0, 'dy' => 0],
-    ['x' => $w - 1, 'y' => $h - 1],
-    'heuristic',
-    'getNeighbors',
-    'neighborEquals',
-    'isEnd'
-);
-$cPath = count($path['path']);
+$target = $graph->addNode($w, $h, 0, 0);
+for ($d = -MAX_LENGTH; $d <= MAX_LENGTH; ++$d) {
+    $graph->addEdge($graph->getNodeFromData($w - 1, $h - 1, $d, 0)->getId(), $target->getId(), 0);
+    $graph->addEdge($graph->getNodeFromData($w - 1, $h - 1, 0, $d)->getId(), $target->getId(), 0);
+}
 
-print ("PathLength: $cPath\n");
+$cn = $graph->countNodes();
+$ce = $graph->countEdges();
+print("NODES: $cn\n");
+print("EDGES: $ce\n");
+$source = $graph->getNodeFromData(0, 0, 0, 0);
 
-$cost = 0;
-for ($y = 0; $y < $h; ++$y)
+$path = $graph->dijkstra($source, $target, true);
+
+var_dump($path);
+
+$sum = 0;
+
+foreach ($map as $y => $row)
 {
-    for ($x = 0; $x < $w; ++$x)
+    foreach ($row as $x => $weight)
     {
-        $point = getPointInPath($path['path'], $x, $y);
-        if ($point === null)
-            print($map[$y][$x]);
+        $nodes = [];
+        for ($d = -MAX_LENGTH; $d < MAX_LENGTH; ++$d)
+        {
+            $tmp = $graph->getNodeFromData($x, $y, $d, 0);
+            if (in_array($tmp->getId(), $path['path']))
+                $nodes[] = $tmp;
+
+            if ($d !== 0)
+            {
+                $tmp = $graph->getNodeFromData($x, $y, 0, $d);
+                if (in_array($tmp->getId(), $path['path']))
+                    $nodes[] = $tmp;
+            }
+        }
+        if (count($nodes) < 1)
+            print($weight);
         else
         {
-            if ($x !== 0 && $y !== 0)
-                $cost += $map[$y][$x];
-            if ($point['dx'] > 0)
-                print(">");
-            elseif($point['dx'] < 0)
-                print("<");
-            elseif($point['dy'] > 0)
-                print("v");
-            elseif($point['dy'] < 0)
-                print("^");
+            $node = $nodes[0];
+            if (count($nodes) > 1)
+                throw new RuntimeException('More than one node ?');
+            if ($x > 0 || $y > 0)
+                $sum += $weight;
+            if ($node->getDx() > 0)
+                print('>');
+            elseif($node->getDx() < 0)
+                print('<');
+            elseif($node->getDy() > 0)
+                print('v');
+            elseif($node->getDy() < 0)
+                print('^');
             else
-                print("+");
+                print('+');
         }
     }
     print("\n");
 }
 
-function isEnd(array $current, array $end): bool
-{
-    return $current['x'] === $end['x'] && $current['y'] === $end['y'];
-}
-
-function getPointInPath(array $path, int $x, int $y): ?array
-{
-    foreach ($path as $point)
-        if ($point['x'] === $x && $point['y'] === $y)
-            return $point;
-    return null;
-}
-
-print ("COST: {$path['cost']}\t$cost\n");
-
-
-function getNeighbor(int $dx, int $dy, array $current): array
-{
-    return [
-        'x' => $current['x'] + $dx,
-        'y' => $current['y'] + $dy,
-        'dx' => $dx === 0 ? 0 : $current['dx'] + $dx,
-        'dy' => $dy === 0 ? 0 : $current['dy'] + $dy,
-    ];
-}
-
-function getNeighbors(int $w, int $h, array $map, array $current): array
-{
-    $pathLimit = 3 - 1;
-    $neighbors = [];
-    if ($current['x'] > 0 && $current['dx'] > -$pathLimit && $current['dx'] <= 0)
-        $neighbors[] = getNeighbor(-1, 0, $current);
-    if ($current['x'] < $w - 1 && $current['dx'] < $pathLimit && $current['dx'] >= 0)
-        $neighbors[] = getNeighbor(1, 0, $current);
-    if ($current['y'] > 0 && $current['dy'] > -$pathLimit && $current['dy'] <= 0)
-        $neighbors[] = getNeighbor(0, -1, $current);
-    if ($current['y'] < $h - 1 && $current['dy'] < $pathLimit && $current['dy'] >= 0)
-        $neighbors[] = getNeighbor(0, 1, $current);
-
-    return $neighbors;
-}
-
-function neighborEquals(array $a, array $b): bool
-{
-    return $a['x'] === $b['x'] && $a['y'] === $b['y'] && $a['dx'] === $b['dx'] && $a['dy'] === $b['dy'];
-}
-
-function heuristic(array $map, array $pointA, array $end): float
-{
-    return (abs($pointA['x'] - $end['x']) + abs($pointA['y'] + $end['y']));
-}
+print ("$sum\n");

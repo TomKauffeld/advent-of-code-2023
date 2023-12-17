@@ -1,7 +1,6 @@
 <?php
 
 
-
 function readInputFile(bool $test = false): array
 {
     $file = getInputFile($test);
