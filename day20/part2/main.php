@@ -66,13 +66,17 @@ while(!$foundCycles)
 $firstAgain = null;
 $lastPC = null;
 $cyclePresses = [];
-foreach ($cycles as $cycle)
+foreach ($cycles as $name => $cycle)
 {
     if ($firstAgain === null || $firstAgain > $cycle['again']['pc'])
         $firstAgain = $cycle['again']['pc'];
     if ($lastPC === null || $lastPC < $cycle['loop']['pc'])
         $lastPC = $cycle['loop']['pc'];
-    $cyclePresses[] = $cycle['loop']['bc'] - $cycle['start']['bc'];
+
+    $loopLength = $cycle['loop']['bc'] - $cycle['start']['bc'];
+    if ($loopLength !== $cycle['start']['bc'] + 1)
+        throw new RuntimeException("Module \"$name\" does not start at the start of the loop");
+    $cyclePresses[] = $loopLength;
 }
 
 if ($lastPC > $firstAgain)
