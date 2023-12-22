@@ -81,7 +81,7 @@ My solutions to the advent of code 2023
 * [Day 18](day18/README.md): solved
 * [Day 19](day19/README.md): solved
 * [Day 20](day20/README.md): solved
-* [Day 21](day21/README.md): TBA
+* [Day 21](day21/README.md): partial (part 1 solved)
 * [Day 22](day22/README.md): TBA
 * [Day 23](day23/README.md): TBA
 * [Day 24](day24/README.md): TBA
