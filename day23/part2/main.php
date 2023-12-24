@@ -1,5 +1,5 @@
 <?php
-namespace Aoc\Y2023\Day23\Part1;
+namespace Aoc\Y2023\Day23\Part2;
 
 use Aoc\Y2023\Day23\Common\Point;
 use function Aoc\Y2023\Day23\Common\parseFile;
